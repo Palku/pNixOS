@@ -36,7 +36,7 @@
     {
       nixosConfigurations = {
         # Replace with your hostname
-        pdesktop = nixpkgs.lib.nixosSystem {
+        homedesktop = nixpkgs.lib.nixosSystem {
           inherit system;
           modules = [
             # Core modules
