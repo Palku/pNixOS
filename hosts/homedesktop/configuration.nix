@@ -1,6 +1,5 @@
-# hosts/mydesktop/configuration.nix - Main system configuration
+# hosts/mydesktop/configuration.nix - Main system configuration with BTRFS impermanence
 { config, pkgs, lib, ... }:
-
 {
   imports = [
     ./hardware-configuration.nix
@@ -15,6 +14,26 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.timeout = 1; # Quick but not instant
+  
+  # BTRFS impermanence setup - reset root on boot
+  boot.initrd.postDeviceCommands = lib.mkAfter ''
+    mkdir /btrfs_tmp
+    mount -o subvol=/ /dev/disk/by-partlabel/root /btrfs_tmp
+    
+    if [[ -e /btrfs_tmp/root ]]; then
+        # Keep a few old roots for debugging
+        mkdir -p /btrfs_tmp/old_roots
+        timestamp=$(date --date="@$(stat -c %Y /btrfs_tmp/root)" "+%Y-%m-%d_%H:%M:%S")
+        mv /btrfs_tmp/root "/btrfs_tmp/old_roots/$timestamp"
+        
+        # Clean old roots (keep last 2)
+        (cd /btrfs_tmp/old_roots && ls -t | tail -n +3 | xargs -r btrfs subvolume delete)
+    fi
+
+    # Create fresh root
+    btrfs subvolume create /btrfs_tmp/root
+    umount /btrfs_tmp
+  '';
   
   # Enable flakes and reasonable optimizations
   nix.settings = {
@@ -82,14 +101,7 @@
     ];
   };
 
-  # Tmpfs root - immutable OS
-  fileSystems."/" = {
-    device = "none";
-    fsType = "tmpfs";
-    options = [ "defaults" "size=8G" "mode=755" ];
-  };
-
-  # SSH
+  # SSH (disabled)
   services.openssh = {
     enable = false;
     settings = {

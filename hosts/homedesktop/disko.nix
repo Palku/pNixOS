@@ -1,12 +1,12 @@
-# hosts/mydesktop/disko.nix - Corrected configuration
+# hosts/mydesktop/disko.nix - BTRFS only for root, ext4 for performance
 { ... }:
 {
   disko.devices = {
     disk = {
-      # OS Disk (1TB NVMe) - Performance with persistence structure
+      # OS Disk (1TB NVMe) - Mixed filesystems for optimal performance
       os = {
         type = "disk";
-        device = "/dev/nvme0n1"; # ✅ Whole disk, not partition
+        device = "/dev/nvme0n1";
         content = {
           type = "gpt";
           partitions = {
@@ -25,8 +25,26 @@
                 ];
               };
             };
+            
+            # Root partition - BTRFS for snapshots only
+            root = {
+              size = "50G";
+              content = {
+                type = "btrfs";
+                extraArgs = [ "-f" ];
+                subvolumes = {
+                  # Root subvolume (gets reset)
+                  "/root" = {
+                    mountpoint = "/";
+                    mountOptions = [ "compress=zstd" "noatime" ];
+                  };
+                };
+              };
+            };
+            
+            # Nix store - ext4 for maximum performance
             nix = {
-              size = "750G"; # Large nix store partition
+              size = "750G";
               content = {
                 type = "filesystem";
                 format = "ext4";
@@ -42,8 +60,10 @@
                 ];
               };
             };
+            
+            # Persist - ext4 for maximum performance  
             persist = {
-              size = "100%"; # Rest of space for system persistence
+              size = "100%"; # ~200G remaining
               content = {
                 type = "filesystem";
                 format = "ext4";
@@ -63,15 +83,15 @@
         };
       };
       
-      # Data Disk - Simple 100% home
+      # Data Disk - Simple ext4
       data = {
         type = "disk";
-        device = "/dev/nvme1n1"; # ✅ Whole disk, not partition
+        device = "/dev/nvme1n1";
         content = {
           type = "gpt";
           partitions = {
             home = {
-              size = "100%"; # ✅ All space for home
+              size = "100%";
               content = {
                 type = "filesystem";
                 format = "ext4";
