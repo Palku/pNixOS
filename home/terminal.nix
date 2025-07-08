@@ -81,7 +81,7 @@
   programs.zsh = {
     enable = true;
     enableCompletion = true;
-    enableAutosuggestions = true;
+    autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
 
     # Performance-focused shell aliases
@@ -151,7 +151,7 @@
     };
 
     # Additional optimizations
-    initExtra = ''
+    initContent = ''
       # Faster directory navigation
       setopt AUTO_CD
       setopt AUTO_PUSHD
