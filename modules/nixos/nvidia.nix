@@ -5,7 +5,6 @@
   # Enable OpenGL with performance optimizations
   hardware.graphics = {
     enable = true;
-    driSupport32Bit = true;
     extraPackages = with pkgs; [
       vaapiVdpau
       libvdpau-va-gl
@@ -16,6 +15,9 @@
       libvdpau-va-gl
     ];
   };
+  hardware.opengl = { 
+    driSupport32Bit = true;
+  }
 
   # Nvidia drivers - latest for 4070 Ti Super
   services.xserver.videoDrivers = [ "nvidia" ];
