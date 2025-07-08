@@ -39,8 +39,8 @@
       fira-code-symbols
       jetbrains-mono
       font-awesome
-      nerd-fonts.FiraCode
-      nerd-fonts.JetBrainsMono
+      #nerd-fonts.FiraCode
+      #nerd-fonts.JetBrainsMono
     ];
     fontconfig = {
       defaultFonts = {
