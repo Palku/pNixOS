@@ -75,7 +75,7 @@
   # Nvidia packages and monitoring tools
   environment.systemPackages = with pkgs; [
     # Monitoring and control
-    nvtop
+    nvtopPackages.nvidia
     nvidia-system-monitor-qt
     
     # Video utilities
