@@ -52,9 +52,9 @@
             nixos-hardware.nixosModules.common-pc-ssd
             
             # Host-specific configuration
-            ./hosts/mydesktop/configuration.nix
-            ./hosts/mydesktop/hardware-configuration.nix
-            ./hosts/mydesktop/disko.nix
+            ./hosts/homedesktop/configuration.nix
+            ./hosts/homedesktop/hardware-configuration.nix
+            ./hosts/homedesktop/disko.nix
             
             # System modules
             ./modules/nixos/performance.nix
