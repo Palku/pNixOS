@@ -51,6 +51,8 @@
     auto-optimise-store = true;
     max-jobs = "auto"; # Use all CPU cores
     cores = 0; # Use all available cores for building
+    download-buffer-size = 268435456;  # 256MB instead of default 64MB
+    download-attempts = 5;             # Retry failed downloads
   };
 
   nixpkgs.config.allowUnfree = true;
