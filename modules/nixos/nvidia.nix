@@ -3,7 +3,7 @@
 
 {
   # Enable OpenGL with performance optimizations
-  hardware.opengl = {
+  hardware.graphics = {
     enable = true;
     driSupport32Bit = true;
     extraPackages = with pkgs; [
@@ -89,7 +89,7 @@
   ];
 
   # Nvidia container runtime for Docker (if using containers)
-  virtualisation.docker.enableNvidia = true;
+  hardware.nvidia-container-toolkit.enable = true;
   
   # Hardware video acceleration
   nixpkgs.config.packageOverrides = pkgs: {

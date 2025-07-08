@@ -110,10 +110,10 @@
   services.power-profiles-daemon.enable = false; # Use our own power management
   
   # Enable CoreCtrl for AMD GPU/CPU management
-  programs.corectrl = {
-    enable = true;
-    gpuOverclock.enable = true;
-  };
+  # programs.corectrl = {
+  #  enable = true;
+  #  gpuOverclock.enable = true;
+  # };
   
   # Gaming performance optimizations (reasonable)
   security.pam.loginLimits = [
