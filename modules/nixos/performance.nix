@@ -81,7 +81,6 @@
     htop
     btop
     iotop
-    nvtopPackages.nvidia
     lm_sensors
     smartmontools
     

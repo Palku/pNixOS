@@ -52,7 +52,7 @@
     max-jobs = "auto"; # Use all CPU cores
     cores = 0; # Use all available cores for building
   };
-  
+
   nixpkgs.config.allowUnfree = true;
   
   # Timezone and locale
@@ -88,7 +88,6 @@
     htop
     neofetch
     lm_sensors # For temperature monitoring
-    nvtop      # GPU monitoring
   ];
 
   # Enable ZSH system-wide
