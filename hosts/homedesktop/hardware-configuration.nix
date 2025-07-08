@@ -49,10 +49,6 @@
     "vm.dirty_ratio" = 20;           # Default is 20, keep it
     "vm.dirty_background_ratio" = 10; # Default is 10, keep it  
     "vm.swappiness" = 10;            # Low but not extreme
-    
-    # File system (reasonable limits)
-    "fs.file-max" = 2097152;
-    "fs.inotify.max_user_watches" = 524288;
   };
 
   # Enable ZRAM for better memory management
