@@ -89,6 +89,7 @@
 
   # Impermanence configuration - keep immutable OS
   environment.persistence."/persist" = {
+    neededForBoot = true;
     hideMounts = true;
     directories = [
       "/var/log"
