@@ -13,6 +13,11 @@
   # Ensure BTRFS support
   boot.supportedFilesystems = [ "btrfs" ];
   boot.initrd.supportedFilesystems = [ "btrfs" ];
+
+  # Override disko-generated filesystem options
+  fileSystems."/persist" = {
+    neededForBoot = true;
+  };
   
   # Bootloader - fast but not extreme
   boot.loader.systemd-boot.enable = true;

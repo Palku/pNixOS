@@ -81,7 +81,6 @@
                   "-m" "1"
                 ];
               };
-              neededForBoot = true;
             };
           };
         };
