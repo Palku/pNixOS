@@ -39,18 +39,6 @@
   # AMD specific power management for monitoring
   hardware.cpu.amd.ryzen-smu.enable = true; # Enable Ryzen SMU for better monitoring
 
-  # Reasonable system optimizations
-  boot.kernel.sysctl = {
-    # Network performance (standard optimizations)
-    "net.core.default_qdisc" = "fq_codel";
-    "net.ipv4.tcp_congestion_control" = "bbr";
-    
-    # Memory management (conservative)
-    "vm.dirty_ratio" = 20;           # Default is 20, keep it
-    "vm.dirty_background_ratio" = 10; # Default is 10, keep it  
-    "vm.swappiness" = 10;            # Low but not extreme
-  };
-
   # Enable ZRAM for better memory management
   zramSwap = {
     enable = true;
