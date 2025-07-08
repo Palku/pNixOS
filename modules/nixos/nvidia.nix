@@ -5,7 +5,6 @@
   # Enable OpenGL with performance optimizations
   hardware.opengl = {
     enable = true;
-    driSupport = true;
     driSupport32Bit = true;
     extraPackages = with pkgs; [
       vaapiVdpau
