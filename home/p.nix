@@ -12,7 +12,7 @@
   home.homeDirectory = "/home/p";
 
   # Persistence for home directory
-  home.persistence."/persist/home/p" = {
+  home.persistence."/home/p" = {
     directories = [
       "Documents"
       "Pictures"
