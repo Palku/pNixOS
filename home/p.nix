@@ -3,6 +3,8 @@
 
 {
   imports = [
+     inputs.impermanence.homeManagerModules.impermanence
+
     ./hyprland.nix
     ./terminal.nix
     ./applications.nix
@@ -10,30 +12,6 @@
 
   home.username = "p";
   home.homeDirectory = "/home/p";
-
-  # Persistence for home directory
-  home.persistence."/home/p" = {
-    directories = [
-      "Documents"
-      "Pictures"
-      "Videos"
-      "Downloads"
-      "Music"
-      "Projects"
-      ".ssh"
-      ".gnupg"
-      ".local/share/keyrings"
-      ".local/share/Steam"
-      ".config/JetBrains"
-      ".config/zed"
-      ".config/corectrl"  # AMD GPU/CPU control tool
-    ];
-    files = [
-      ".gitconfig"
-      ".zsh_history"
-    ];
-    allowOther = true;
-  };
 
   # Git configuration
   programs.git = {

@@ -68,7 +68,9 @@
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
-                extraSpecialArgs = { inherit hyprland; };
+                extraSpecialArgs = { 
+                  inherit hyprland;
+                };
                 users.p = import ./home/p.nix;
               };
             }
