@@ -67,6 +67,7 @@
             persist = {
               name = "persist"; 
               size = "100%"; # ~200G remaining
+              neededForBoot = true;
               content = {
                 type = "filesystem";
                 format = "ext4";
