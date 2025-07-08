@@ -9,11 +9,16 @@
   # System basics
   networking.hostName = "homedesktop";
   networking.networkmanager.enable = true;
+
+  # Ensure BTRFS support
+  boot.supportedFilesystems = [ "btrfs" ];
+  boot.initrd.supportedFilesystems = [ "btrfs" ];
   
   # Bootloader - fast but not extreme
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.timeout = 1; # Quick but not instant
+  boot.loader.systemd-boot.configurationLimit = 10;
   
   # BTRFS impermanence setup - reset root on boot
   boot.initrd.postDeviceCommands = lib.mkAfter ''

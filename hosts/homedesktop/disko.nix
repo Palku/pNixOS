@@ -28,6 +28,7 @@
             
             # Root partition - BTRFS for snapshots only
             root = {
+              name = "root";        # ✅ Add this line
               size = "50G";
               content = {
                 type = "btrfs";
@@ -44,6 +45,7 @@
             
             # Nix store - ext4 for maximum performance
             nix = {
+              name = "nixstore";  
               size = "750G";
               content = {
                 type = "filesystem";
@@ -63,6 +65,7 @@
             
             # Persist - ext4 for maximum performance  
             persist = {
+              name = "persist"; 
               size = "100%"; # ~200G remaining
               content = {
                 type = "filesystem";
@@ -85,6 +88,7 @@
       
       # Data Disk - Simple ext4
       data = {
+        name = "user"; 
         type = "disk";
         device = "/dev/nvme1n1";
         content = {
