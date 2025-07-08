@@ -26,8 +26,8 @@
     # Nvidia settings menu
     nvidiaSettings = true;
     
-    # Use the latest stable driver for best 4070 Ti Super support
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
+    # Use the latest driver for best 4070 Ti Super support
+    package = config.boot.kernelPackages.nvidiaPackages.latest;
     
     # Modesetting required for Wayland
     modesetting.enable = true;
