@@ -3,8 +3,6 @@
 
 {
   imports = [
-     inputs.impermanence.homeManagerModules.impermanence
-
     ./hyprland.nix
     ./terminal.nix
     ./applications.nix
