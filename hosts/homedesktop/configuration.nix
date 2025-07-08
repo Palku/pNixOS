@@ -53,6 +53,8 @@
     cores = 0; # Use all available cores for building
   };
   
+  nixpkgs.config.allowUnfree = true;
+  
   # Timezone and locale
   time.timeZone = "Europe/Stockholm";
   i18n.defaultLocale = "en_US.UTF-8";
