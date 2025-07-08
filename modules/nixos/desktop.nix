@@ -8,16 +8,6 @@
     package = hyprland.packages."x86_64-linux".hyprland;
   };
 
-  # XDG Portal
-  xdg.portal = {
-    enable = true;
-    extraPortals = with pkgs; [
-      xdg-desktop-portal-hyprland
-      xdg-desktop-portal-gtk
-    ];
-    config.common.default = "*";
-  };
-
   # Audio
   security.rtkit.enable = true;
   services.pipewire = {

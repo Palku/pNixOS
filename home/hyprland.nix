@@ -9,8 +9,8 @@
     settings = {
       # Monitor configuration (adjust to your setup)
       monitor = [
-        "DP-1,2560x1440@144,0x0,1"
-        ",preferred,auto,1"
+        "DP-1,preferred,0x0,1"       # ✅ Use native res/refresh for DP-1
+        ",preferred,auto,1"          # ✅ Other monitors use preferred
       ];
 
       # Startup applications
