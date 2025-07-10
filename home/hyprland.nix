@@ -12,6 +12,10 @@
         "DP-1,preferred,0x0,1"       # ✅ Use native res/refresh for DP-1
         ",preferred,auto,1"          # ✅ Other monitors use preferred
       ];
+      
+      render = {
+        explicit_sync = 2;  # Try 2 first, if issues occur try 0
+      };
 
       # Startup applications
       exec-once = [

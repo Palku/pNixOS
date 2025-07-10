@@ -40,6 +40,10 @@
     ripgrep
     bat
     eza
+
+    # Test
+    kitty  # Required for default Hyprland config
+    egl-wayland  # Critical for Nvidia
   ];
 
   # Docker

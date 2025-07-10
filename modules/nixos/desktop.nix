@@ -6,6 +6,19 @@
   programs.hyprland = {
     enable = true;
     package = hyprland.packages."x86_64-linux".hyprland;
+    portalPackage = hyprland.packages."x86_64-linux".xdg-desktop-portal-hyprland;
+  };
+
+  # In modules/nixos/desktop.nix, add:
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    # This helps with portal configuration
+    config = {
+      common = {
+        default = [ "hyprland" "gtk" ];
+      };
+    };
   };
 
   # Audio
