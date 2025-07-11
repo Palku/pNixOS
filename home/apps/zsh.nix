@@ -1,4 +1,8 @@
 # Zsh with performance optimizations
+{ config, pkgs, ... }:
+
+{
+
 programs.zsh = {
   enable = true;
   enableCompletion = true;
@@ -119,3 +123,4 @@ programs.zsh = {
     }
   '';
 };
+}
