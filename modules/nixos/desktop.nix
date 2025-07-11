@@ -2,6 +2,11 @@
 { config, pkgs, hyprland, ... }:
 
 {
+
+  environment.systemPackages = [
+    pkgs.kdePackages.dolphin # File manager
+  ];
+
   # Hyprland
   programs.hyprland = {
     enable = true;
@@ -42,8 +47,8 @@
       fira-code-symbols
       jetbrains-mono
       font-awesome
-      #nerd-fonts.FiraCode
-      #nerd-fonts.JetBrainsMono
+      nerd-fonts.fira-code
+      nerd-fonts.jetbrains-mono
     ];
     fontconfig = {
       defaultFonts = {

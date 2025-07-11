@@ -31,6 +31,7 @@
     docker-compose
 
     # Utilities
+    nil # nix linter dep
     jq
     yq
     curl

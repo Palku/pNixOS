@@ -100,6 +100,7 @@
     htop
     neofetch
     lm_sensors # For temperature monitoring
+    kdePackages.qtsvg
   ];
 
   environment.variables.EDITOR = "zed-editor";

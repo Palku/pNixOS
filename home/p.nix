@@ -5,6 +5,9 @@
   imports = [
     ./hyprland.nix
     ./terminal.nix
+    ./apps/zsh.nix
+    ./apps/alacritty.nix
+    ./apps/starship.nix
     ./applications.nix
   ];
 

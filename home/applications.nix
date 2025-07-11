@@ -9,21 +9,16 @@
     spotify
     bitwarden-desktop
     # chromium
-
     # Communication
     discord
     # telegram-desktop
-
     # Media
     # vlc
-    # spotify
-
     # Utilities
     # file-roller
     # gnome.nautilus
     # pavucontrol
     # blueman
-    foot
     vscode
     zed-editor
 # Games
