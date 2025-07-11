@@ -12,7 +12,7 @@ programs.zsh = {
   # Performance-focused shell aliases
   shellAliases = {
     # Modern replacements for better performance
-    ll = "eza -la --git --group-directories-first";
+    ll = "eza -ll --git --group-directories-first";
     ls = "eza --group-directories-first";
     la = "eza -la --git --group-directories-first";
     tree = "eza --tree";

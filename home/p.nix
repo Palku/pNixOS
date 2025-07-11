@@ -1,11 +1,17 @@
 # home/p.nix - Home Manager configuration
-{ config, pkgs, hyprland, ... }:
+{
+  config,
+  pkgs,
+  hyprland,
+  ...
+}:
 
 {
   imports = [
     ./hyprland.nix
     ./terminal.nix
-    ./apps/zsh.nix
+    #./apps/zsh.nix
+    ./apps/fish.nix
     ./apps/alacritty.nix
     ./apps/starship.nix
     ./applications.nix

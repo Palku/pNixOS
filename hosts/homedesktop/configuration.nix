@@ -1,5 +1,10 @@
 # hosts/mydesktop/configuration.nix - Main system configuration with BTRFS impermanence
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 {
   imports = [
     ./hardware-configuration.nix
@@ -53,15 +58,18 @@
 
   # Enable flakes and reasonable optimizations
   nix.settings = {
-    experimental-features = [ "nix-command" "flakes" ];
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
     auto-optimise-store = true;
     max-jobs = "auto"; # Use all CPU cores
     cores = 0; # Use all available cores for building
-    download-buffer-size = 268435456;  # 256MB instead of default 64MB
-    download-attempts = 5;             # Retry failed downloads
-    substituters = ["https://hyprland.cachix.org"];
-    trusted-substituters = ["https://hyprland.cachix.org"];
-    trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
+    download-buffer-size = 268435456; # 256MB instead of default 64MB
+    download-attempts = 5; # Retry failed downloads
+    substituters = [ "https://hyprland.cachix.org" ];
+    trusted-substituters = [ "https://hyprland.cachix.org" ];
+    trusted-public-keys = [ "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=" ];
   };
 
   nixpkgs.config.allowUnfree = true;
@@ -85,8 +93,15 @@
   users.users.p = {
     isNormalUser = true;
     description = "p";
-    extraGroups = [ "networkmanager" "wheel" "docker" "libvirtd" "gamemode" "corectrl" ];
-    shell = pkgs.zsh;
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "docker"
+      "libvirtd"
+      "gamemode"
+      "corectrl"
+    ];
+    shell = pkgs.fish;
   };
 
   # Essential system packages
@@ -105,8 +120,8 @@
 
   environment.variables.EDITOR = "zed-editor";
 
-  # Enable ZSH system-wide
-  programs.zsh.enable = true;
+  # Enable Fish system-wide
+  programs.fish.enable = true;
 
   # Impermanence configuration - keep immutable OS
   environment.persistence."/persist" = {

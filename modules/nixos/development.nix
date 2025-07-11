@@ -32,6 +32,7 @@
 
     # Utilities
     nil # nix linter dep
+    nixd # nix language server
     jq
     yq
     curl
@@ -43,8 +44,8 @@
     eza
     openssl
     # Test
-    kitty  # Required for default Hyprland config
-    egl-wayland  # Critical for Nvidia
+    # kitty  # Required for default Hyprland config
+    egl-wayland # Critical for Nvidia
   ];
 
   # Docker
@@ -58,10 +59,12 @@
     enable = false;
     package = pkgs.postgresql_15;
     ensureDatabases = [ "development" ];
-    ensureUsers = [{
-      name = "p";
-      ensureDBOwnership = true;
-    }];
+    ensureUsers = [
+      {
+        name = "p";
+        ensureDBOwnership = true;
+      }
+    ];
   };
 
   # Git configuration (global)
