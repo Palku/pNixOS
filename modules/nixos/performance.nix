@@ -7,7 +7,7 @@
     # Set appropriate scheduler for SSDs
     ACTION=="add|change", KERNEL=="nvme[0-9]*", ATTR{queue/scheduler}="none"
     ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="mq-deadline"
-    
+
     # Reasonable readahead for SSDs
     ACTION=="add|change", KERNEL=="nvme[0-9]*", ATTR{bdi/read_ahead_kb}="128"
     ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="0", ATTR{bdi/read_ahead_kb}="128"
@@ -16,7 +16,7 @@
   # CPU frequency scaling - balanced for performance and silence
   powerManagement = {
     enable = true;
-    cpuFreqGovernor = "schedutil"; # Scales up fast, down gradually for silence
+    cpuFreqGovernor = "powersave";
     powertop.enable = false; # Don't interfere with our tuning
   };
 
@@ -26,7 +26,7 @@
       DefaultTimeoutStopSec=20s
       DefaultTimeoutStartSec=20s
     '';
-    
+
     user.extraConfig = ''
       DefaultTimeoutStopSec=20s
       DefaultTimeoutStartSec=20s
@@ -39,12 +39,12 @@
     "net.core.default_qdisc" = "fq_codel";
     "net.ipv4.tcp_congestion_control" = "bbr";
     "net.ipv4.tcp_fastopen" = 3;
-    
+
     # Conservative memory settings
     "vm.swappiness" = 10;            # Low but reasonable
     "vm.dirty_ratio" = 20;           # Keep defaults
     "vm.dirty_background_ratio" = 10;
-    
+
     # File system (reasonable limits)
     "fs.file-max" = 2097152;
     "fs.inotify.max_user_watches" = 1048576;
@@ -83,15 +83,15 @@
     iotop
     lm_sensors
     smartmontools
-    
+
     # AMD-specific tools
     zenmonitor   # AMD Zen CPU monitoring
     corectrl     # AMD GPU/CPU control
-    
+
     # Performance analysis
     sysbench
     stress-ng
-    
+
     # Modern CLI tools
     eza          # Better ls
     bat          # Better cat
@@ -103,22 +103,22 @@
 
   # Enable hardware monitoring
   services.smartd.enable = true;
-  
+
   # Enable thermal monitoring without interference
   services.thermald.enable = false; # Let AMD handle thermal management natively
   services.power-profiles-daemon.enable = false; # Use our own power management
-  
+
   # Enable CoreCtrl for AMD GPU/CPU management
   # programs.corectrl = {
   #  enable = true;
   #  gpuOverclock.enable = true;
   # };
-  
+
   # Gaming performance optimizations (reasonable)
-  security.pam.loginLimits = [
-    { domain = "@gamemode"; item = "nice"; type = "soft"; value = "-10"; }
-    { domain = "@gamemode"; item = "rtprio"; type = "soft"; value = "20"; }
-  ];
+  #security.pam.loginLimits = [
+  #  { domain = "@gamemode"; item = "nice"; type = "soft"; value = "-10"; }
+  #  { domain = "@gamemode"; item = "rtprio"; type = "soft"; value = "20"; }
+  #];
 
   # Enable CPU microcode updates
   hardware.cpu.amd.updateMicrocode = true;
