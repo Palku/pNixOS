@@ -6,23 +6,27 @@
   home.packages = with pkgs; [
     # Browsers
     firefox
+    spotify
+    bitwarden-desktop
     # chromium
 
     # Communication
-    discord
+    # discord
     # telegram-desktop
 
     # Media
-    vlc
-    spotify
+    # vlc
+    # spotify
 
     # Utilities
     # file-roller
     # gnome.nautilus
     # pavucontrol
     # blueman
-    
-    # Games
+    foot
+    vscode
+    zed-editor
+# Games
 
   ];
 

@@ -18,24 +18,24 @@
   fileSystems."/persist" = {
     neededForBoot = true;
   };
-  
+
   # Bootloader - fast but not extreme
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.timeout = 1; # Quick but not instant
-  boot.loader.systemd-boot.configurationLimit = 10;
-  
+  boot.loader.systemd-boot.configurationLimit = 5;
+
   # BTRFS impermanence setup - reset root on boot
   boot.initrd.postDeviceCommands = lib.mkAfter ''
     mkdir /btrfs_tmp
     mount -o subvol=/ /dev/disk/by-partlabel/root /btrfs_tmp
-    
+
     if [[ -e /btrfs_tmp/root ]]; then
         # Keep a few old roots for debugging
         mkdir -p /btrfs_tmp/old_roots
         timestamp=$(date --date="@$(stat -c %Y /btrfs_tmp/root)" "+%Y-%m-%d_%H:%M:%S")
         mv /btrfs_tmp/root "/btrfs_tmp/old_roots/$timestamp"
-        
+
         # Clean old roots (keep last 2)
         (cd /btrfs_tmp/old_roots && ls -t | tail -n +3 | xargs -r btrfs subvolume delete)
     fi
@@ -44,7 +44,13 @@
     btrfs subvolume create /btrfs_tmp/root
     umount /btrfs_tmp
   '';
-  
+
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 1w";
+  };
+
   # Enable flakes and reasonable optimizations
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
@@ -56,10 +62,10 @@
   };
 
   nixpkgs.config.allowUnfree = true;
-  
+
   # Timezone and locale
   time.timeZone = "Europe/Stockholm";
-  i18n.defaultLocale = "en_US.UTF-8";
+  i18n.defaultLocale = "sv_SE.UTF-8";
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "sv_SE.UTF-8";
     LC_IDENTIFICATION = "sv_SE.UTF-8";
@@ -83,6 +89,7 @@
   # Essential system packages
   environment.systemPackages = with pkgs; [
     git
+    zed-editor
     nano
     curl
     wget
@@ -91,6 +98,8 @@
     neofetch
     lm_sensors # For temperature monitoring
   ];
+
+  environment.variables.EDITOR = "zed-editor";
 
   # Enable ZSH system-wide
   programs.zsh.enable = true;

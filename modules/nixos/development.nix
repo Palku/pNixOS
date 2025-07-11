@@ -7,29 +7,29 @@
     # JetBrains IDEs
     jetbrains.rider
     jetbrains.datagrip
-    
+
     # Editors
     zed-editor
-    
+
     # Python development
     uv
     # python3
-    
+
     # Version control
     git
     git-lfs
     gh
-    
+
     # Build tools
     gnumake
     cmake
     gcc
     clang
-    
+
     # Container tools
     docker
     docker-compose
-    
+
     # Utilities
     jq
     yq
@@ -40,7 +40,7 @@
     ripgrep
     bat
     eza
-
+    openssl
     # Test
     kitty  # Required for default Hyprland config
     egl-wayland  # Critical for Nvidia

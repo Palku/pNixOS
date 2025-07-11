@@ -69,13 +69,13 @@
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 extraSpecialArgs = { 
-                  inherit hyprland;dd 
+                  inherit hyprland;
                 };
                 users.p = import ./home/p.nix;
               };
             }
           ];
-          specialArgs = { inherit hyprland inputs; };
+          specialArgs = { inherit hyprland; };
         };
       };
     };
