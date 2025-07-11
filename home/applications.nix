@@ -11,7 +11,7 @@
     # chromium
 
     # Communication
-    # discord
+    discord
     # telegram-desktop
 
     # Media

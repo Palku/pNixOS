@@ -7,6 +7,7 @@
     enable = true;
     enable32Bit = true;
     extraPackages = with pkgs; [
+      egl-wayland
       vaapiVdpau
       libvdpau-va-gl
       nvidia-vaapi-driver # Hardware video acceleration
@@ -14,6 +15,8 @@
     extraPackages32 = with pkgs.pkgsi686Linux; [
       vaapiVdpau
       libvdpau-va-gl
+      egl-wayland
+      nvidia-vaapi-driver
     ];
   };
 
@@ -22,20 +25,20 @@
   hardware.nvidia = {
     # Use open-source kernel modules (stable for 40-series)
     open = true;
-    
+
     # Nvidia settings menu
     nvidiaSettings = true;
-    
+
     # Use the latest driver for best 4070 Ti Super support
     package = config.boot.kernelPackages.nvidiaPackages.latest;
-    
+
     # Modesetting required for Wayland
     modesetting.enable = true;
-    
+
     # Power management - enable for proper scaling and silence when idle
     powerManagement.enable = true;
     powerManagement.finegrained = false;
-    
+
     # Don't force full composition pipeline (let it scale properly)
     forceFullCompositionPipeline = false;
   };
@@ -46,7 +49,7 @@
     "nvidia-drm.modeset=1"
     "nvidia-drm.fbdev=1"
     "nvidia.NVreg_PreserveVideoMemoryAllocations=1" # Better power management
-    
+
     # Allow proper power scaling
     "nvidia.NVreg_EnableGpuFirmware=1"             # Enable GPU firmware loading
   ];
@@ -58,19 +61,23 @@
     XDG_SESSION_TYPE = "wayland";
     GBM_BACKEND = "nvidia-drm";
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-    
+
     NVD_BACKEND = "direct";  # For VA-API
     ELECTRON_OZONE_PLATFORM_HINT = "auto";  # For Electron apps
 
     # Wayland compatibility
     WLR_NO_HARDWARE_CURSORS = "1";
     NIXOS_OZONE_WL = "1";
-    
+
     # GPU acceleration for applications
     MOZ_ENABLE_WAYLAND = "1";
-    QT_QPA_PLATFORM = "wayland";
+    DISPLAY = ":0";                    # This is what Steam is missing!
+    WAYLAND_DISPLAY = "wayland-1";     # XWayland display
+
+    # Update this one to include X11 fallback:
+    QT_QPA_PLATFORM = "wayland;xcb";   # Changed from just "wayland"
     SDL_VIDEODRIVER = "wayland";
-    
+
     # Let applications control VSync (don't force off globally)
     __GL_MaxFramesAllowed = "1"; # Reduce input lag but allow scaling
   };
@@ -80,20 +87,20 @@
     # Monitoring and control
     nvtopPackages.nvidia
     nvidia-system-monitor-qt
-    
+
     # Video utilities
     ffmpeg-full
     libva-utils
     vdpauinfo
     clinfo # OpenCL info
-    
+
     # GPU control
     nvitop  # Better nvidia-smi alternative
   ];
 
   # Nvidia container runtime for Docker (if using containers)
   hardware.nvidia-container-toolkit.enable = true;
-  
+
   # Hardware video acceleration
   nixpkgs.config.packageOverrides = pkgs: {
     vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
@@ -110,10 +117,10 @@
       ExecStart = "${pkgs.writeShellScript "nvidia-power-setup" ''
         # Enable persistence mode for better power management
         ${pkgs.linuxPackages.nvidia_x11}/bin/nvidia-smi -pm 1
-        
+
         # Set power management mode to adaptive (scales with load)
         echo auto > /sys/bus/pci/devices/0000:01:00.0/power/control || true
-        
+
         # Enable GPU boost (allows proper scaling)
         ${pkgs.linuxPackages.nvidia_x11}/bin/nvidia-smi -acp 0 || true
       ''}";

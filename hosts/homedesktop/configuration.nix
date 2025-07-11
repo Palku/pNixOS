@@ -59,6 +59,9 @@
     cores = 0; # Use all available cores for building
     download-buffer-size = 268435456;  # 256MB instead of default 64MB
     download-attempts = 5;             # Retry failed downloads
+    substituters = ["https://hyprland.cachix.org"];
+    trusted-substituters = ["https://hyprland.cachix.org"];
+    trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
   };
 
   nixpkgs.config.allowUnfree = true;
