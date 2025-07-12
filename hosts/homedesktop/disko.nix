@@ -75,16 +75,6 @@
                       };
                     };
                   };
-                  # Snapshot for root rollback
-                  "/root-blank" = {
-                    mountpoint = "/.root-blank";
-                    mountOptions = [
-                      "compress-force=zstd:1"
-                      "noatime"
-                      "ssd"
-                      "space_cache=v2"
-                    ];
-                  };
                 };
               };
             };
