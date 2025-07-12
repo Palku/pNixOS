@@ -5,7 +5,7 @@
       # First drive - OS drive (adjust device name as needed)
       nvme0 = {
         type = "disk";
-        device = "/dev/nvme0n1";
+        device = "/dev/disk/by-id/nvme-Samsung_SSD_980_PRO_1TB_S5GXNG0NB07224Z";
         content = {
           type = "gpt";
           partitions = {
@@ -85,7 +85,7 @@
       # Second drive - Home drive
       nvme1 = {
         type = "disk";
-        device = "/dev/nvme1n1"; # Adjust to your second drive
+        device = "/dev/disk/by-id/nvme-KINGSTON_SFYRD4000G_50026B7686EC62BB";
         content = {
           type = "gpt";
           partitions = {
