@@ -15,7 +15,6 @@
     ./apps/starship.nix
     ./apps/firefox.nix
     ./apps/zed-editor.nix
-    ./apps/steam.nix
     ./packages.nix
   ];
 

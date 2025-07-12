@@ -9,11 +9,8 @@
 {
   nixpkgs.config.allowUnfree = lib.mkForce true;
 
-  hardware.opengl.enable = true;
-  hardware.opengl.driSupport = true;
-  hardware.opengl.driSupport32Bit = true;
-
   hardware.graphics = {
+    enable = true;
     enable32Bit = true;
     extraPackages = with pkgs; [
       egl-wayland
@@ -44,6 +41,13 @@
     "nvidia-drm.modeset=1"
     "nvidia-drm.fbdev=1"
     "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
+  ];
+
+  boot.initrd.kernelModules = [
+    "nvidia"
+    "nvidia_modeset"
+    "nvidia_uvm"
+    "nvidia_drm"
   ];
 
   systemd.services.nvidia-suspend = {

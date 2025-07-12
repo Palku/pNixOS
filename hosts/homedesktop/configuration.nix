@@ -96,7 +96,6 @@
       "/var/lib/systemd/coredump"
       "/var/lib/docker"
       "/var/lib/libvirt"
-      "/var/lib/flatpak"
     ];
     files = [
       "/etc/machine-id"
@@ -125,6 +124,13 @@
 
   # Enable Fish system-wide
   programs.fish.enable = true;
+
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+    dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+    localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
+  };
 
   # SSH (disabled)
   services.openssh = {
