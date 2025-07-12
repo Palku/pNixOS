@@ -1,115 +1,137 @@
-# hosts/mydesktop/disko.nix - BTRFS only for root, ext4 for performance
-{ ... }:
+# disko-config.nix - Optimized for dual M.2 NVMe drives
 {
   disko.devices = {
     disk = {
-      # OS Disk (1TB NVMe) - Mixed filesystems for optimal performance
-      os = {
+      # First drive - OS drive (adjust device name as needed)
+      nvme0 = {
         type = "disk";
         device = "/dev/nvme0n1";
         content = {
           type = "gpt";
           partitions = {
             ESP = {
-              priority = 1;
-              name = "ESP";
-              size = "1G";
+              label = "boot";
+              size = "1G"; # Larger for multiple kernels/generations
               type = "EF00";
               content = {
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot";
-                mountOptions = [ 
-                  "defaults" 
-                  "umask=0077"
+                mountOptions = [
+                  "defaults"
+                  "umask=0077" # Boot security
                 ];
               };
             };
-            
-            # Root partition - BTRFS for snapshots only
             root = {
-              name = "root";        # ✅ Add this line
-              size = "50G";
+              size = "100%";
               content = {
                 type = "btrfs";
-                extraArgs = [ "-f" ];
+                extraArgs = [
+                  "-L"
+                  "nixos"
+                  "-f"
+                ];
                 subvolumes = {
-                  # Root subvolume (gets reset)
+                  # Root subvolume - will be cleared on boot
                   "/root" = {
                     mountpoint = "/";
-                    mountOptions = [ "compress=zstd" "noatime" ];
+                    mountOptions = [
+                      "compress-force=zstd:1" # Fast compression for OS
+                      "noatime"
+                      "ssd"
+                      "space_cache=v2" # Better for NVMe
+                      "discard=async" # TRIM support
+                    ];
+                  };
+                  # NixOS store - never cleared
+                  "/nix" = {
+                    mountpoint = "/nix";
+                    mountOptions = [
+                      "compress-force=zstd:3" # Higher compression for store
+                      "noatime"
+                      "ssd"
+                      "space_cache=v2"
+                      "discard=async"
+                    ];
+                  };
+                  # Persistent system data
+                  "/persist" = {
+                    mountpoint = "/persist";
+                    mountOptions = [
+                      "compress-force=zstd:1"
+                      "noatime"
+                      "ssd"
+                      "space_cache=v2"
+                      "discard=async"
+                    ];
+                  };
+                  # Swap file for hibernation/emergency
+                  "/swap" = {
+                    mountpoint = "/.swapvol";
+                    swap = {
+                      swapfile = {
+                        size = "8G"; # Adjust based on your RAM
+                      };
+                    };
+                  };
+                  # Snapshot for root rollback
+                  "/root-blank" = {
+                    mountpoint = "/.root-blank";
+                    mountOptions = [
+                      "compress-force=zstd:1"
+                      "noatime"
+                      "ssd"
+                      "space_cache=v2"
+                    ];
                   };
                 };
-              };
-            };
-            
-            # Nix store - ext4 for maximum performance
-            nix = {
-              name = "nixstore";  
-              size = "750G";
-              content = {
-                type = "filesystem";
-                format = "ext4";
-                mountpoint = "/nix";
-                mountOptions = [
-                  "defaults"
-                  "noatime"
-                  "discard"
-                  "barrier=0"
-                ];
-                extraArgs = [
-                  "-m" "1"
-                ];
-              };
-            };
-            
-            # Persist - ext4 for maximum performance  
-            persist = {
-              name = "persist"; 
-              size = "100%"; # ~200G remaining
-              content = {
-                type = "filesystem";
-                format = "ext4";
-                mountpoint = "/persist";
-                mountOptions = [
-                  "defaults"
-                  "noatime"
-                  "discard"
-                  "barrier=0"
-                ];
-                extraArgs = [
-                  "-m" "1"
-                ];
               };
             };
           };
         };
       };
-      
-      # Data Disk - Simple ext4
-      data = {
-        name = "user"; 
+
+      # Second drive - Home drive
+      nvme1 = {
         type = "disk";
-        device = "/dev/nvme1n1";
+        device = "/dev/nvme1n1"; # Adjust to your second drive
         content = {
           type = "gpt";
           partitions = {
             home = {
               size = "100%";
               content = {
-                type = "filesystem";
-                format = "ext4";
-                mountpoint = "/home";
-                mountOptions = [
-                  "defaults"
-                  "noatime"
-                  "discard"
-                  "user_xattr"
-                  "barrier=0"
-                ];
+                type = "btrfs";
                 extraArgs = [
-                  "-m" "0"
+                  "-L"
+                  "home"
+                  "-f"
                 ];
+                subvolumes = {
+                  # Main home subvolume
+                  "/home" = {
+                    mountpoint = "/home";
+                    mountOptions = [
+                      "compress-force=zstd:1" # Fast compression
+                      "relatime" # Better for home dirs
+                      "ssd"
+                      "space_cache=v2"
+                      "discard=async"
+                    ];
+                  };
+                  # Games - less compression for performance
+                  "/games" = {
+                    mountpoint = "/home/games";
+                    mountOptions = [
+                      "compress=lzo" # Faster for games
+                      "noatime"
+                      "ssd"
+                      "space_cache=v2"
+                      "discard=async"
+                    ];
+                  };
+                };
               };
             };
           };

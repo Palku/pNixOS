@@ -8,85 +8,103 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ./disko.nix
   ];
 
-  # System basics
-  networking.hostName = "homedesktop";
-  networking.networkmanager.enable = true;
+  networking = {
+    hostName = "homedesktop";
+    networkmanager.enable = true;
+    firewall.enable = true;
+  };
 
-  # Ensure BTRFS support
-  boot.supportedFilesystems = [ "btrfs" ];
-  boot.initrd.supportedFilesystems = [ "btrfs" ];
+  boot = {
+    kernelPackages = pkgs.linuxPackages_latest;
+    supportedFilesystems = [ "btrfs" ];
+    initrd = {
+      supportedFilesystems = [ "btrfs" ];
+    };
+
+    loader = {
+      timeout = 3;
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+      systemd-boot.configurationLimit = 10; # Keep 10 generations
+    };
+
+    kernelParams = [
+      "nowatchdog" # Disable watchdog for slight performance gain
+      "quiet" # Clean boot messages
+    ];
+    # Enable systemd in initrd for rollback service
+    initrd.systemd.enable = true;
+
+    # BTRFS root rollback service
+    initrd.systemd.services.rollback = {
+      description = "Rollback BTRFS root subvolume";
+      wantedBy = [ "initrd.target" ];
+      before = [ "sysroot.mount" ];
+      unitConfig.DefaultDependencies = "no";
+      serviceConfig.Type = "oneshot";
+      script = ''
+        mkdir -p /mnt
+
+        # Mount the BTRFS root of OS drive
+        mount -o subvol=/ /dev/disk/by-label/nixos /mnt
+
+        # Delete all subvolumes under root
+        btrfs subvolume list -o /mnt/root |
+        cut -f9 -d' ' |
+        while read subvolume; do
+          echo "Deleting /$subvolume subvolume"
+          btrfs subvolume delete "/mnt/$subvolume"
+        done &&
+        echo "Deleting /root subvolume" &&
+        btrfs subvolume delete /mnt/root
+
+        # Restore blank root
+        echo "Restoring blank /root subvolume"
+        btrfs subvolume snapshot /mnt/root-blank /mnt/root
+
+        umount /mnt
+      '';
+    };
+  };
 
   # Override disko-generated filesystem options
   fileSystems."/persist" = {
     neededForBoot = true;
   };
 
-  # Bootloader - fast but not extreme
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.timeout = 1; # Quick but not instant
-  boot.loader.systemd-boot.configurationLimit = 5;
-
-  # BTRFS impermanence setup - reset root on boot
-  boot.initrd.postDeviceCommands = lib.mkAfter ''
-    mkdir /btrfs_tmp
-    mount -o subvol=/ /dev/disk/by-partlabel/root /btrfs_tmp
-
-    if [[ -e /btrfs_tmp/root ]]; then
-        # Keep a few old roots for debugging
-        mkdir -p /btrfs_tmp/old_roots
-        timestamp=$(date --date="@$(stat -c %Y /btrfs_tmp/root)" "+%Y-%m-%d_%H:%M:%S")
-        mv /btrfs_tmp/root "/btrfs_tmp/old_roots/$timestamp"
-
-        # Clean old roots (keep last 2)
-        (cd /btrfs_tmp/old_roots && ls -t | tail -n +3 | xargs -r btrfs subvolume delete)
-    fi
-
-    # Create fresh root
-    btrfs subvolume create /btrfs_tmp/root
-    umount /btrfs_tmp
-  '';
-
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 1w";
-  };
-
-  # Enable flakes and reasonable optimizations
-  nix.settings = {
-    experimental-features = [
-      "nix-command"
-      "flakes"
+  # BTRFS maintenance
+  services.btrfs.autoScrub = {
+    enable = true;
+    interval = "monthly";
+    fileSystems = [
+      "/"
+      "/home"
     ];
-    auto-optimise-store = true;
-    max-jobs = "auto"; # Use all CPU cores
-    cores = 0; # Use all available cores for building
-    download-buffer-size = 268435456; # 256MB instead of default 64MB
-    download-attempts = 5; # Retry failed downloads
-    substituters = [ "https://hyprland.cachix.org" ];
-    trusted-substituters = [ "https://hyprland.cachix.org" ];
-    trusted-public-keys = [ "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=" ];
   };
 
-  nixpkgs.config.allowUnfree = true;
-
-  # Timezone and locale
-  time.timeZone = "Europe/Stockholm";
-  i18n.defaultLocale = "sv_SE.UTF-8";
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "sv_SE.UTF-8";
-    LC_IDENTIFICATION = "sv_SE.UTF-8";
-    LC_MEASUREMENT = "sv_SE.UTF-8";
-    LC_MONETARY = "sv_SE.UTF-8";
-    LC_NAME = "sv_SE.UTF-8";
-    LC_NUMERIC = "sv_SE.UTF-8";
-    LC_PAPER = "sv_SE.UTF-8";
-    LC_TELEPHONE = "sv_SE.UTF-8";
-    LC_TIME = "sv_SE.UTF-8";
+  # Impermanence configuration
+  environment.persistence."/persist" = {
+    hideMounts = true;
+    directories = [
+      "/etc/nixos"
+      "/etc/NetworkManager/system-connections"
+      "/var/log"
+      "/var/lib/bluetooth"
+      "/var/lib/nixos"
+      "/var/lib/systemd/coredump"
+      "/var/lib/docker"
+      "/var/lib/libvirt"
+      "/var/lib/flatpak"
+    ];
+    files = [
+      "/etc/machine-id"
+      "/etc/ssh/ssh_host_ed25519_key"
+      "/etc/ssh/ssh_host_ed25519_key.pub"
+      "/etc/ssh/ssh_host_rsa_key"
+      "/etc/ssh/ssh_host_rsa_key.pub"
+    ];
   };
 
   # User configuration
@@ -98,49 +116,15 @@
       "wheel"
       "docker"
       "libvirtd"
-      "gamemode"
       "corectrl"
     ];
     shell = pkgs.fish;
   };
 
-  # Essential system packages
-  environment.systemPackages = with pkgs; [
-    git
-    zed-editor
-    nano
-    curl
-    wget
-    tree
-    htop
-    neofetch
-    lm_sensors # For temperature monitoring
-    kdePackages.qtsvg
-  ];
-
   environment.variables.EDITOR = "zed-editor";
 
   # Enable Fish system-wide
   programs.fish.enable = true;
-
-  # Impermanence configuration - keep immutable OS
-  environment.persistence."/persist" = {
-    hideMounts = true;
-    directories = [
-      "/var/log"
-      "/var/lib/nixos"
-      "/var/lib/systemd/coredump"
-      "/etc/NetworkManager/system-connections"
-      "/etc/nixos"
-    ];
-    files = [
-      "/etc/machine-id"
-      "/etc/ssh/ssh_host_ed25519_key"
-      "/etc/ssh/ssh_host_ed25519_key.pub"
-      "/etc/ssh/ssh_host_rsa_key"
-      "/etc/ssh/ssh_host_rsa_key.pub"
-    ];
-  };
 
   # SSH (disabled)
   services.openssh = {
@@ -150,9 +134,6 @@
       KbdInteractiveAuthentication = false;
     };
   };
-
-  # Firewall
-  networking.firewall.enable = true;
 
   system.stateVersion = "25.05";
 }

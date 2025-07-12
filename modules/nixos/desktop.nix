@@ -1,10 +1,16 @@
 # modules/nixos/desktop.nix - Desktop environment
-{ config, pkgs, hyprland, ... }:
+{
+  config,
+  pkgs,
+  hyprland,
+  ...
+}:
 
 {
 
   environment.systemPackages = [
     pkgs.kdePackages.dolphin # File manager
+    pkgs.kdePackages.qtsvg # Dep for kde(Dolphin)
   ];
 
   # Hyprland
@@ -21,7 +27,10 @@
     # This helps with portal configuration
     config = {
       common = {
-        default = [ "hyprland" "gtk" ];
+        default = [
+          "hyprland"
+          "gtk"
+        ];
       };
     };
   };

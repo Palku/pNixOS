@@ -8,12 +8,8 @@
     jetbrains.rider
     jetbrains.datagrip
 
-    # Editors
-    zed-editor
-
     # Python development
     uv
-    # python3
 
     # Version control
     git
@@ -35,36 +31,14 @@
     nixd # nix language server
     jq
     yq
-    curl
-    wget
-    tree
     fd
-    ripgrep
-    bat
-    eza
     openssl
-    # Test
-    # kitty  # Required for default Hyprland config
-    egl-wayland # Critical for Nvidia
   ];
 
   # Docker
   virtualisation.docker = {
     enable = true;
     enableOnBoot = true;
-  };
-
-  # Enable development services
-  services.postgresql = {
-    enable = false;
-    package = pkgs.postgresql_15;
-    ensureDatabases = [ "development" ];
-    ensureUsers = [
-      {
-        name = "p";
-        ensureDBOwnership = true;
-      }
-    ];
   };
 
   # Git configuration (global)

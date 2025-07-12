@@ -9,12 +9,14 @@
 {
   imports = [
     ./hyprland.nix
-    ./terminal.nix
     #./apps/zsh.nix
     ./apps/fish.nix
     ./apps/alacritty.nix
     ./apps/starship.nix
-    ./applications.nix
+    ./apps/firefox.nix
+    ./apps/zed-editor.nix
+    ./apps/steam.nix
+    ./packages.nix
   ];
 
   home.username = "p";

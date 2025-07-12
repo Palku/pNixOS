@@ -20,19 +20,5 @@
     # pavucontrol
     # blueman
     vscode
-    zed-editor
-# Games
-
   ];
-
-  # Firefox configuration
-  programs.firefox = {
-    enable = true;
-    profiles.default = {
-      settings = {
-        "media.ffmpeg.vaapi.enabled" = true;
-        "media.hardware-video-decoding.enabled" = true;
-      };
-    };
-  };
 }
