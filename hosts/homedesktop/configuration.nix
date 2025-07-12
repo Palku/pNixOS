@@ -37,37 +37,30 @@
     # Enable systemd in initrd for rollback service
     initrd.systemd.enable = true;
 
-    # BTRFS root rollback service
-    initrd.systemd.services.rollback = {
-      description = "Rollback BTRFS root subvolume";
-      wantedBy = [ "initrd.target" ];
-      before = [ "sysroot.mount" ];
-      unitConfig.DefaultDependencies = "no";
-      serviceConfig.Type = "oneshot";
-      script = ''
-        mkdir -p /mnt
+    boot.initrd.postResumeCommands = lib.mkAfter ''
+  mkdir /btrfs_tmp
+  mount /dev/disk/by-label/nixos /btrfs_tmp
+  if [[ -e /btrfs_tmp/root ]]; then
+      mkdir -p /btrfs_tmp/old_roots
+      timestamp=$(date --date="@$(stat -c %Y /btrfs_tmp/root)" "+%Y-%m-%-d_%H:%M:%S")
+      mv /btrfs_tmp/root "/btrfs_tmp/old_roots/$timestamp"
+  fi
 
-        # Mount the BTRFS root of OS drive
-        mount -o subvol=/ /dev/disk/by-label/nixos /mnt
+  delete_subvolume_recursively() {
+      IFS=$'\n'
+      for i in $(btrfs subvolume list -o "$1" | cut -f 9- -d ' '); do
+          delete_subvolume_recursively "/btrfs_tmp/$i"
+      done
+      btrfs subvolume delete "$1"
+  }
 
-        # Delete all subvolumes under root
-        btrfs subvolume list -o /mnt/root |
-        cut -f9 -d' ' |
-        while read subvolume; do
-          echo "Deleting /$subvolume subvolume"
-          btrfs subvolume delete "/mnt/$subvolume"
-        done &&
-        echo "Deleting /root subvolume" &&
-        btrfs subvolume delete /mnt/root
+  for i in $(find /btrfs_tmp/old_roots/ -maxdepth 1 -mtime +30); do
+      delete_subvolume_recursively "$i"
+  done
 
-        # Restore blank root
-        echo "Restoring blank /root subvolume"
-        btrfs subvolume snapshot /mnt/root-blank /mnt/root
-
-        umount /mnt
-      '';
-    };
-  };
+  btrfs subvolume create /btrfs_tmp/root
+  umount /btrfs_tmp
+'';
 
   # Override disko-generated filesystem options
   fileSystems."/persist" = {
