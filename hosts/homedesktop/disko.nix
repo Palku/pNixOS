@@ -122,7 +122,7 @@
                   };
                   # Games - less compression for performance
                   "/games" = {
-                    mountpoint = "/home/games";
+                    mountpoint = "/games";
                     mountOptions = [
                       "compress=lzo" # Faster for games
                       "noatime"
