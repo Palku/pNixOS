@@ -113,19 +113,8 @@
                   "/home" = {
                     mountpoint = "/home";
                     mountOptions = [
-                      "compress-force=zstd:1" # Fast compression
-                      "relatime" # Better for home dirs
-                      "ssd"
-                      "space_cache=v2"
-                      "discard=async"
-                    ];
-                  };
-                  # Games - less compression for performance
-                  "/games" = {
-                    mountpoint = "/games";
-                    mountOptions = [
-                      "compress=lzo" # Faster for games
-                      "noatime"
+                      "compress=lzo" # Fast compression
+                      "noatime" # Better for home dirs
                       "ssd"
                       "space_cache=v2"
                       "discard=async"
