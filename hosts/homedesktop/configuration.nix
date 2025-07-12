@@ -32,15 +32,25 @@
         unitConfig.DefaultDependencies = "no";
         serviceConfig.Type = "oneshot";
         script = ''
+          set -euo pipefail
+    
+          # Use the actual partition device (part2 = root partition)
+          DEVICE="/dev/disk/by-id/nvme-Samsung_SSD_980_PRO_1TB_S5GXNG0NB07224Z-part2"
+    
+          echo "Waiting for device $DEVICE..."
+          until [ -e "$DEVICE" ]; do
+            sleep 0.1
+          done
+    
           mkdir -p /btrfs_tmp
-          mount -t btrfs /dev/disk/by-label/nixos /btrfs_tmp
-          
+          mount -t btrfs "$DEVICE" /btrfs_tmp
+    
           if [[ -e /btrfs_tmp/root ]]; then
             mkdir -p /btrfs_tmp/old_roots
             timestamp=$(date --date="@$(stat -c %Y /btrfs_tmp/root)" "+%Y-%m-%d_%H:%M:%S")
             mv /btrfs_tmp/root "/btrfs_tmp/old_roots/$timestamp"
           fi
-          
+    
           delete_subvolume_recursively() {
             IFS=$'\n'
             for i in $(btrfs subvolume list -o "$1" | cut -f 9- -d ' '); do
@@ -48,17 +58,16 @@
             done
             btrfs subvolume delete "$1"
           }
-          
-          for i in $(find /btrfs_tmp/old_roots/ -maxdepth 1 -mtime +5); do
+    
+          for i in $(find /btrfs_tmp/old_roots/ -maxdepth 1 -mtime +5 2>/dev/null || true); do
             delete_subvolume_recursively "$i"
           done
-          
+    
           btrfs subvolume create /btrfs_tmp/root
           umount /btrfs_tmp
         '';
       };
     };
-
     loader = {
       timeout = 3;
       systemd-boot.enable = true;
