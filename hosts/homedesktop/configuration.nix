@@ -54,7 +54,7 @@
       btrfs subvolume delete "$1"
   }
 
-  for i in $(find /btrfs_tmp/old_roots/ -maxdepth 1 -mtime +30); do
+  for i in $(find /btrfs_tmp/old_roots/ -maxdepth 1 -mtime +5); do
       delete_subvolume_recursively "$i"
   done
 
