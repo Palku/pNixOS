@@ -61,7 +61,7 @@
       btrfs subvolume create /btrfs_tmp/root
       umount /btrfs_tmp
     '';
-
+  };
   # Override disko-generated filesystem options
   fileSystems."/persist" = {
     neededForBoot = true;
