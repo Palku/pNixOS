@@ -11,6 +11,7 @@
   environment.systemPackages = [
     pkgs.kdePackages.dolphin # File manager
     pkgs.kdePackages.qtsvg # Dep for kde(Dolphin)
+    pkgs.bitwarden-desktop
   ];
 
   # Hyprland
