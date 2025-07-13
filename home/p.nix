@@ -10,6 +10,7 @@
   imports = [
     ./hyprland.nix
     #./apps/zsh.nix
+    ./apps/ssh.nix
     ./apps/fish.nix
     ./apps/alacritty.nix
     ./apps/starship.nix
