@@ -7,4 +7,7 @@
     enable = true;
     addKeysToAgent = "yes";
   };
+  home.sessionVariables = {
+    SSH_AUTH_SOCK = "/run/user/1000/ssh-agent";
+  };
 }
