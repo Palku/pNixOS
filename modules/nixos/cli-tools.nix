@@ -22,5 +22,8 @@
     ripgrep # Better grep
     dust # Better du
     duf # Better df
+
+    # Security CLI tools
+    bitwarden-cli
   ];
 }
