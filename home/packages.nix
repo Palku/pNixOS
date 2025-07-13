@@ -7,7 +7,7 @@
     # Browsers
     firefox
     spotify
-    bitwarden-desktop
+    # bitwarden-desktop
     # chromium
     # Communication
     discord
