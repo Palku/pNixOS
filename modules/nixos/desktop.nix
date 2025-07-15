@@ -7,11 +7,9 @@
 }:
 
 {
-
-  environment.systemPackages = [
-    pkgs.kdePackages.dolphin # File manager
-    pkgs.kdePackages.qtsvg # Dep for kde(Dolphin)
-    pkgs.bitwarden-desktop
+  environment.systemPackages = with pkgs; [
+    kdePackages.dolphin # File manager
+    bitwarden-desktop
   ];
 
   # Hyprland

@@ -77,6 +77,7 @@
             ./modules/nixos/nix.nix
             ./modules/nixos/systemd.nix
             ./modules/nixos/desktop.nix
+            ./modules/nixos/sddm.nix
 
             ## Amd CPU
             ./modules/nixos/cpu-amd.nix

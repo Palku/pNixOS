@@ -73,7 +73,7 @@
 
   environment.systemPackages = with pkgs; [
     nvtopPackages.nvidia
-    nvidia-system-monitor-qt
+    #nvidia-system-monitor-qt
     ffmpeg-full
     libva-utils
     vdpauinfo
