@@ -8,8 +8,14 @@
     jetbrains.rider
     jetbrains.datagrip
 
+    # .Net development
+    dotnet-sdk_9
+
     # Python development
     uv
+
+    # Android development
+    apksigner
 
     # Version control
     git
@@ -33,6 +39,7 @@
     yq
     fd
     openssl
+    unzip
   ];
 
   # Docker

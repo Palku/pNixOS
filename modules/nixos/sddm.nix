@@ -17,18 +17,17 @@
     theme = "sddm-astronaut-theme";
     settings = {
       Theme = {
-        Background = "./pixel_sakura.gif";
+        Background = "../../Background/pixel_sakura.gif";
       };
     };
     extraPackages = with pkgs; [
-      sddm-astronaut
       kdePackages.qtmultimedia
       kdePackages.qtsvg
       kdePackages.qtvirtualkeyboard
     ];
   };
 
-  #environment.systemPackages = with pkgs; [
-  #  sddm-astronaut
-  #];
+  environment.systemPackages = with pkgs; [
+    sddm-astronaut
+  ];
 }
